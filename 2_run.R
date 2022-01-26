@@ -14,7 +14,8 @@ p2 <- list(
       burn_out = 190,
       export_fl_template = '2_run/tmp/GLM_%s_%s_%s.feather'),
     packages = c('retry','glmtools', 'GLM3r'),
-    pattern = map(p1_model_config)),
+    pattern = map(p1_model_config),
+    error = 'continue'),
   # Group model runs by lake id and gcm
   # Discard the glm diagnostics so they don't trigger rebuilds
   # even when the export_fl_hash is unchanged
