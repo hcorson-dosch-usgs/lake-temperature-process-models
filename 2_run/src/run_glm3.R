@@ -82,6 +82,8 @@ extract_glm_output <- function(nc_filepath, nml_obj, export_fl) {
 #'  the duration of the model run, whether or not the model run succeeded, 
 #'  and the code returned by the call to GLM3r::run_glm(). 
 run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, export_fl_template) {
+  build_start = Sys.time()
+
   # pull lake_id from model_config
   lake_id <- model_config$site_id
   time_period <- model_config$time_period
@@ -127,6 +129,7 @@ run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, e
   # tibble with model diagnostics and indicate that it failed.
   tryCatch(
     {
+      attempt_start = Sys.time()
       retry::retry(
         {
           # Attempt to run GLM and store the execution time
@@ -139,8 +142,8 @@ run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, e
           max_output_date <- max(output_dates)
         },
         until=function(val, cnd) glm_code == 0 & max_output_date==sim_stop,
-        max_tries = 5)
-
+        max_tries = 2)
+      retry_time <- difftime(Sys.time(), attempt_start, units='sec')
       # make sure glm did succeed  
       if(glm_code != 0 | max_output_date!=sim_stop) stop()
       
@@ -160,7 +163,10 @@ run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, e
         export_fl_hash = tools::md5sum(export_fl),
         glm_run_date = Sys.time(),
         glm_version = GLM3r::glm_version(as_char = TRUE), #Needs version 3.1.18 of GLM3r
-        glm_time_s = glm_time,
+        build_time_s = difftime(Sys.time(), build_start, units='sec'),
+	attempt_time_s = difftime(Sys.time(), attempt_start, units='sec'),
+	retry_time_s = retry_time,
+	glm_time_s = glm_time,
         param_sim_start = sim_start,
         param_sim_stop = sim_stop,
         max_output_date = max_output_date,
@@ -183,7 +189,10 @@ run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, e
         export_fl_hash = NA,
         glm_run_date = Sys.time(),
         glm_version = GLM3r::glm_version(as_char = TRUE), #Needs version 3.1.18 of GLM3r
-        glm_time_s = glm_time,
+        build_time_s = difftime(Sys.time(), build_start, units='sec'),
+	attempt_time_s = difftime(Sys.time(), attempt_start, units='sec'),
+	retry_time_s = attempt_time_s,
+	glm_time_s = glm_time,
         param_sim_start = sim_start,
         param_sim_stop = sim_stop,
         max_output_date = ifelse(exists("max_output_date"), max_output_date, NA), #Set to NA if couldn't be extracted
