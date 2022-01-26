@@ -13,7 +13,8 @@ p1 <- list(
   tar_target(p1_lake_cell_xwalk_csv, '1_prep/in/lake_cell_xwalk.csv', format = 'file'),
   tar_target(p1_lake_cell_xwalk_df, 
              readr::read_csv(p1_lake_cell_xwalk_csv, col_types=cols()) %>%
-               filter(site_id %in% p1_nml_lake_ids)),
+               filter(site_id %in% p1_nml_lake_ids) %>%
+	       arrange(site_id)),
 
   # Define mapping variables
   tar_target(p1_lake_ids, pull(p1_lake_cell_xwalk_df, site_id)),
