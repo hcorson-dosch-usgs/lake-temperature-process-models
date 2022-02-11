@@ -1,6 +1,9 @@
 # Targets files
 _targets
 
+# Temporary run tracking files
+vm_stats_*.txt
+
 # Ignore intermediate pipeline files
 */in/*
 */tmp/*
@@ -49,6 +52,3 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
-
-# R Environment Variables
-.Renviron
