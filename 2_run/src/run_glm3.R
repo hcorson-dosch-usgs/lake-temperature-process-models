@@ -150,7 +150,7 @@ run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, e
       # extract output
       export_fl <- sprintf(export_fl_template, lake_id, gcm, time_period)
       extract_glm_output(nc_filepath, nml_obj, export_fl)
-      
+
       # Build export tibble with export file, its hash, and glm run information
       export_tibble <- tibble(
         lake_id = lake_id,
@@ -191,7 +191,7 @@ run_glm3_model <- function(sim_dir, nml_objs, model_config, burn_in, burn_out, e
         glm_version = GLM3r::glm_version(as_char = TRUE), #Needs version 3.1.18 of GLM3r
         build_time_s = difftime(Sys.time(), build_start, units='sec'),
 	attempt_time_s = difftime(Sys.time(), attempt_start, units='sec'),
-	retry_time_s = attempt_time_s,
+	retry_time_s = ifelse(exists("retry_time"), retry_time, NA),
 	glm_time_s = glm_time,
         param_sim_start = sim_start,
         param_sim_stop = sim_stop,
