@@ -9,6 +9,9 @@ vm_stats_*.txt
 */tmp/*
 */out/*
 
+# Allow the nml template to be committed
+!1_prep/in/glm3_template.nml
+
 # Allow the `.empty` files to be committed
 !*/in/.empty
 !*/tmp/.empty
