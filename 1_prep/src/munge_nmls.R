@@ -76,3 +76,4 @@ resample_H_A <- function(H, A) {
   
   c(ha_df_resampled, bsn_vals = nrow(ha_df_resampled))
 }
+
