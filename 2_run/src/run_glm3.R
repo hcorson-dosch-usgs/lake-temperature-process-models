@@ -154,7 +154,7 @@ run_glm3_model <- function(sim_dir, nml_obj, model_config, export_fl_template) {
         glm_version = GLM3r::glm_version(as_char = TRUE), #Needs version 3.1.18 of GLM3r
         build_time_s = difftime(Sys.time(), build_start, units='sec'),
 	attempt_time_s = difftime(Sys.time(), attempt_start, units='sec'),
-	retry_time_s = retry_time,
+	retry_time_s = ifelse(exists("retry_time"), retry_time, NaN),
 	glm_time_s = glm_time,
         param_sim_start = sim_start,
         param_sim_stop = sim_stop,
@@ -183,7 +183,7 @@ run_glm3_model <- function(sim_dir, nml_obj, model_config, export_fl_template) {
         glm_version = GLM3r::glm_version(as_char = TRUE), #Needs version 3.1.18 of GLM3r
         build_time_s = difftime(Sys.time(), build_start, units='sec'),
 	attempt_time_s = difftime(Sys.time(), attempt_start, units='sec'),
-	retry_time_s = ifelse(exists("retry_time"), retry_time, NA),
+	retry_time_s = ifelse(exists("retry_time"), retry_time, NaN),
 	glm_time_s = glm_time,
         param_sim_start = sim_start,
         param_sim_stop = sim_stop,
