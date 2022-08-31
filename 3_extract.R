@@ -26,9 +26,14 @@ p3 <- list(
   # and the cell_no and tile_no for that lake.
   tar_target(
     p3_gcm_glm_uncalibrated_output_feather_tibble,
-    generate_output_tibble(p3_gcm_glm_uncalibrated_output_feathers,
-                           output_file_regex = "GLM_(.*)_(.*).feather",
-                           lake_xwalk = p1_lake_cell_tile_xwalk_df)
+    {
+      output_file_chunks <- split(p3_gcm_glm_uncalibrated_output_feathers, ceiling(seq_along(p3_gcm_glm_uncalibrated_output_feathers)/500))
+      output_tibble <- purrr::map_dfr(output_file_chunks, function(output_file_chunk) {
+        generate_output_tibble(output_file_chunk,
+                               output_file_regex = "GLM_(.*)_(.*).feather",
+                               lake_xwalk = p1_lake_cell_tile_xwalk_df)
+      })
+    }
   ),
   
   # Save summary of output files
