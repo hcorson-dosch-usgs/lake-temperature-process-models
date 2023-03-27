@@ -113,6 +113,10 @@ p5 <- list(
   
   ###### Assess model bias ######
   
+  # Overall bias
+  tar_target(p5_gcm_bias_overall,
+             calc_overall_bias(p5_gcm_pred_obs_eval)),
+  
   # Bias through time - doy
   tar_target(p5_gcm_bias_doy,
              calc_bias(p5_gcm_pred_obs_eval_groups, grouping_var = 'doy_bin',
@@ -259,6 +263,10 @@ p5 <- list(
   
   ###### Assess model bias ######
   
+  # Overall bias
+  tar_target(p5_nldas_bias_overall,
+             calc_overall_bias(p5_nldas_pred_obs_eval)),
+  
   # Bias through time - year
   tar_target(p5_nldas_bias_year,
              calc_bias(p5_nldas_pred_obs_eval_groups, grouping_var = 'year', driver = 'NLDAS',
@@ -320,7 +328,11 @@ p5 <- list(
   
   ###### Assess model accuracy ######
   
-  # # Accuracy through time - year
+  # Overall accuracy
+  tar_target(p5_nldas_accuracy_overall,
+             calc_overall_rmse(p5_nldas_pred_obs_eval, driver = 'NLDAS')),
+  
+  # Accuracy through time - year
 
   tar_target(p5_nldas_accuracy_year,
              calc_rmse(p5_nldas_pred_obs_eval_groups, grouping_var = 'year', driver = 'NLDAS',

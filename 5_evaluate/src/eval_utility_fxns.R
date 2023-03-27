@@ -173,6 +173,22 @@ calc_bias <- function(eval_pred_obs, grouping_var, driver, depth_class) {
     mutate(driver = driver, depth_class = depth_class, .before=1)
 }
 
+#' @title Calculate overall bias by driver
+#' @description Calculate the mean and median bias of model predictions 
+#' for all sites relative to observations, across all depths, by driver
+#' @param eval_pred_obs a tibble of the matched model predictions and 
+#' observations
+#' @return a tibble with one row per driver and columns for the driver,  
+#' median bias, # of obs, and # of sites
+calc_overall_bias <- function(eval_pred_obs) {
+  # calculate rmse
+  eval_pred_obs %>%
+    group_by(driver) %>%
+    summarize(median_bias = median(pred_diff, na.rm=TRUE),
+              n_obs = n(),
+              n_sites = length(unique(site_id)))
+}
+
 #' @title Calculate rmse
 #' @description Calculate the rmse of model predictions over a 
 #' specified `grouping_var`
@@ -198,6 +214,26 @@ calc_rmse <- function(eval_pred_obs, grouping_var, driver, depth_class) {
               n_dates = n(),
               n_sites = length(unique(site_id))) %>%
   mutate(driver = driver, depth_class = depth_class, .before=1)
+}
+
+#' @title Calculate overall rmse
+#' @description Calculate the rmse of model predictions for all sites
+#' compared to observations, across all depths
+#' @param eval_pred_obs a tibble of the matched model predictions and 
+#' observations
+#' @param driver weather/climate driver used to generate GLM predictions
+#' @return a tibble with one row and columns for the rmse, # of obs, 
+#' # of sites and driver
+calc_overall_rmse <- function(eval_pred_obs, driver) {
+  # confirm that only matched pred-obs for a single driver were provided
+  stopifnot(length(driver) == 1)
+  
+  # calculate rmse
+  eval_pred_obs %>%
+    summarize(rmse = sqrt(mean((pred_diff)^2, na.rm=TRUE)),
+              n_obs = n(),
+              n_sites = length(unique(site_id))) %>%
+    mutate(driver = driver, .before=1)
 }
 
 #' @title Plot evaluation metrics as a bar plot
