@@ -21,10 +21,9 @@ gcm_pred_obs_munged <- munge_pred_obs(gcm_pred_obs)
  
 get_gcm_metrics <- function(pred_obs) {
   pred_obs %>%
-    summarize(median_bias = median(pred_diff, na.rm=TRUE),
-              mean_bias = mean(pred_diff, na.rm=TRUE),
+    summarize(bias = mean(pred_diff, na.rm=TRUE),
               n_obs = n(),
-              n_sites = length(unique(site_id)))
+              n_lakes = length(unique(site_id)))
 }
   
 evaluation_metrics_GCM_overall <- gcm_pred_obs_munged %>%
@@ -50,11 +49,10 @@ nldas_pred_obs_munged <- munge_pred_obs(nldas_pred_obs)
 
 get_nldas_metrics <- function(pred_obs) {
   pred_obs %>%
-    summarize(rmse = sqrt(mean((pred_diff)^2, na.rm=TRUE)),
-              median_bias = median(pred_diff, na.rm=TRUE),
-              mean_bias = mean(pred_diff, na.rm=TRUE),
+    summarize(RMSE = sqrt(mean((pred_diff)^2, na.rm=TRUE)),
+              bias = mean(pred_diff, na.rm=TRUE),
               n_obs = n(),
-              n_sites = length(unique(site_id)))
+              n_lakes = length(unique(site_id)))
 }
 
 evaluation_metrics_nldas_overall <- nldas_pred_obs_munged %>%
